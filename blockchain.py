@@ -1,3 +1,5 @@
+# Modified from https://medium.com/pythoneers/building-a-blockchain-from-scratch-with-python-489e7116142e
+
 from datetime import datetime as date
 import hashlib
 
@@ -20,11 +22,26 @@ class Block:
     def calculate_hash(self) -> str:
         hash_string = str(self.block_id) + str(self.timestamp) + str(self.data) + str(self.previous_hash)
         return hashlib.sha256(hash_string.encode()).hexdigest()
+    
+    def __str__(self) -> str:
+        return f"Block #{self.block_id}\nTimestamp: {self.timestamp}\nData: {self.data}\nHash: {self.hash}\nPrevious Hash: {self.previous_hash}\n"
 
 class Blockchain:
     def __init__(self) -> None:
         self.date_format = "%Y-%m-%d %H:%M:%S.%f"
         self.chain = [self.create_genesis_block()]
+
+    def __iter__(self):
+        self.current_block_id = 0
+        return self
+    
+    def __next__(self):
+        if self.current_block_id < len(self.chain):
+            current_block = self.chain[self.current_block_id]
+            self.current_block_id += 1
+            return current_block
+        else:
+            raise StopIteration
 
     def create_genesis_block(self) -> Block:
         return Block(0, date.now(), [], "0")
@@ -38,6 +55,9 @@ class Blockchain:
         except ValueError:
             return False
 
+        if not isinstance(data, Data):
+            return False
+        
         new_block = Block(len(self.chain), str(timestamp), data, self.get_latest_block().hash)
         self.chain.append(new_block)
         
@@ -51,16 +71,7 @@ class Blockchain:
             if current_block.hash != current_block.calculate_hash():
                 return False
 
-            if(current_block.previous_hash != previous_block.hash):
+            if current_block.previous_hash != previous_block.hash:
                 return False
             
         return True
-    
-    def print_chain(self) -> None:
-        for block in self.chain:
-            print("Block #" + str(block.block_id))
-            print("Timestamp: " + str(block.timestamp))
-            print("Data: " + str(block.data))
-            print("Hash: " + block.hash)
-            print("Previous Hash: " + block.previous_hash)
-            print("\n")
