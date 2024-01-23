@@ -53,9 +53,16 @@ class Blockchain:
         try:
             date.strptime(str(timestamp), self.date_format)
         except ValueError:
+            print("Error 001V: Invalid Timestamp")
             return False
 
         if not isinstance(data, Data):
+            print("Error 002V: Invalid Instance")
+            return False
+        
+        allowed_attributes = {'sender', 'message'}
+        if not set(vars(data)) == allowed_attributes:
+            print("Error 003V: Invalid Attribute(s)")
             return False
         
         new_block = Block(len(self.chain), str(timestamp), data, self.get_latest_block().hash)
@@ -69,9 +76,11 @@ class Blockchain:
             previous_block = self.chain[i-1]
 
             if current_block.hash != current_block.calculate_hash():
+                print("Error 001I: Invalid Hash")
                 return False
 
             if current_block.previous_hash != previous_block.hash:
+                print("Error 002I: Invalid Chain")
                 return False
             
         return True
