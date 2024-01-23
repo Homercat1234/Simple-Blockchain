@@ -44,7 +44,7 @@ class Blockchain:
             raise StopIteration
 
     def create_genesis_block(self) -> Block:
-        return Block(0, date.now(), [], "0")
+        return Block(0, date.now(), Data("Administrator", "Happy Genesis :)"), "0")
     
     def get_latest_block(self) -> Block:
         return self.chain[-1]
