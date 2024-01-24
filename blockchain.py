@@ -12,7 +12,7 @@ class Data:
         return(f'{self.sender}, {self.message}')
 
 class Block:
-    def __init__(self, block_id, timestamp, data, previous_hash) -> None:
+    def __init__(self, block_id: int, timestamp: date, data: Data, previous_hash: str) -> None:
         self.block_id = block_id
         self.timestamp = timestamp
         self.data = data
@@ -49,7 +49,7 @@ class Blockchain:
     def get_latest_block(self) -> Block:
         return self.chain[-1]
     
-    def add_block(self, timestamp, data) -> bool:
+    def add_block(self, timestamp: date, data: Data) -> bool:
         try:
             date.strptime(str(timestamp), self.date_format)
         except ValueError:
@@ -84,3 +84,9 @@ class Blockchain:
                 return False
             
         return True
+    
+    def __str__(self) -> str:
+        return_string = ""
+        for block in blockchain:
+            return_string += f"{block}\n"
+        return return_string
