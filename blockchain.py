@@ -87,6 +87,6 @@ class Blockchain:
     
     def __str__(self) -> str:
         return_string = ""
-        for block in blockchain:
+        for block in self.chain:
             return_string += f"{block}\n"
         return return_string
